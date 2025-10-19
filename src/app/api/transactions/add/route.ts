@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { addTransactions, StoredTransaction } from "@/lib/store/devStore";
 import { categorize } from "@/lib/categorizer/rules";
-import { auth } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
+    const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id as string | undefined;
 
     const { amount, description, date, type } = await req.json();
